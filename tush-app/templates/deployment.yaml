@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app_name }}
+spec:
+  selector:
+     app: {{ .Values.app_name }}
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8081
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app_name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app_name }}
+    spec:
+      serviceAccountName: secrets-service-account
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "eks-cluster-secrets"
+      containers:
+        - name: {{ .Values.app_name }}
+          image: {{ .Values.container.image }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          env:
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            {{- range .Values.env }}
+            - name: {{ regexSplit "=" . -1 | first }}
+              value: {{ regexSplit "=" . -1 | last }}
+            {{- end }}
+            - name: KAFKA_BROKERS
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: eventstream_kafka_brokers
+            - name: EVENTSTREAM_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: registry_access_key
+            - name: EVENTSTREAM_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: registry_secret_key
+            - name: EVENTSTREAM_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: kafka_scram_username
+            - name: EVENTSTREAM_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: kafka_scram_password
