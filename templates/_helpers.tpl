@@ -37,6 +37,12 @@ Common labels
 helm.sh/chart: {{ include "tush-app.chart" . }}
 {{ include "tush-app.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
+{{/*
+Error: label validation error: missing key "app.kubernetes.io/managed-by
+Fix: https://stackoverflow.com/questions/62964532/helm-not-creating-the-resources
+*/}}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
