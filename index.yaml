@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  tush-app:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-02-03T19:26:56.252264-05:00"
+    description: A Helm chart for Tush
+    digest: d5613428dbe18926d4d74019ef1228f19bf4e7673794fedcb587e5308cfbbfc0
+    name: tush-app
+    type: application
+    urls:
+    - tush-app-0.1.2.tgz
+    version: 0.1.2
+generated: "2022-02-03T19:26:56.250983-05:00"
