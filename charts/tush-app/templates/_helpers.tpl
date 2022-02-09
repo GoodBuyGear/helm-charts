@@ -39,10 +39,7 @@ helm.sh/chart: {{ include "tush-app.chart" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-meta.helm.sh/release-name: {{ .Release.Name }}
-meta.helm.sh/release-namespace: {{ .Release.Namespace }}
-app.kubernetes.io/managed-by: Helm
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
@@ -63,3 +60,4 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+}
