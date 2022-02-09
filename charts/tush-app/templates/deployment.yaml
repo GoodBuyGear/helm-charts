@@ -17,8 +17,7 @@ kind: Deployment
 metadata:
   name: {{ .Values.app_name }}
   namespace: {{ .Values.namespace }}
-  labels:
-    {{ template "tush-app.labels" . }}
+  labels: {{ include "tush-app.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
