@@ -144,6 +144,16 @@ entries:
   tush-app-helm:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-02-09T21:29:37.222764093Z"
+    description: A Helm chart for Tush
+    digest: 0ed784c009183c302ba70751bd0f1c683989c162345a96ca00157d71401e64df
+    name: tush-app-helm
+    type: application
+    urls:
+    - https://github.com/GoodBuyGear/helm-charts/releases/download/tush-app-helm-0.1.20/tush-app-helm-0.1.20.tgz
+    version: 0.1.20
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-02-09T21:02:43.189018459Z"
     description: A Helm chart for Tush
     digest: 831d7d90a21b8ff199f8fc932ffef8d10bedbd04d959188e505d3c0d4e594f87
