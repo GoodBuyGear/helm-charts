@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.app_name }}
+  {{ template "tush-app.labels" . }}
 spec:
   selector:
      app: {{ .Values.app_name }}
