@@ -20,6 +20,8 @@ kind: Deployment
 metadata:
   name: {{ .Values.app_name }}
   namespace: {{ .Values.namespace }}
+  labels:
+  {{- include "tush-app.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
@@ -67,7 +69,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: eventstream-kafka-client-credentials
-                  key: registry_secret_key
+                  key: registry_secret_kπey
             - name: EVENTSTREAM_USERNAME
               valueFrom:
                 secretKeyRef:
