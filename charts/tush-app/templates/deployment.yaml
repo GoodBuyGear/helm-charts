@@ -51,6 +51,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: SENTRY_KEY
+              value: {{ .Values.SENTRY_KEY }}
+            - name: DD_API_KEY
+              value: {{ .Values.DD_API_KEY }}
             {{- range .Values.env }}
             - name: {{ regexSplit "=" . -1 | first }}
               value: {{ regexSplit "=" . -1 | last }}
