@@ -1,4 +1,4 @@
-app_name: tush-app
+app_name: tush-app-helm
 namespace: default
 replicas: 1
 container:
