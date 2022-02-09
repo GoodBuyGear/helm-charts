@@ -40,6 +40,8 @@ helm.sh/chart: {{ include "tush-app.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+meta.helm.sh/release-name: {{ .Release.Name }}
+meta.helm.sh/release-namespace: {{ .Release.Namespace }}
 {{- end }}
 
 {{/*
