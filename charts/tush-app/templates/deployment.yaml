@@ -69,7 +69,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: eventstream-kafka-client-credentials
-                  key: registry_secret_kπey
+                  key: registry_secret_key
             - name: EVENTSTREAM_USERNAME
               valueFrom:
                 secretKeyRef:
