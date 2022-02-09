@@ -3,7 +3,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.app_name }}
-  labels: {{ include "tush-app.labels" . | nindent 4 }}
+  namespace: {{ .Relase.Namespace }}
+  labels:
+  {{- include "tush-app.labels" . | nindent 4 }}
 spec:
   selector:
      app: {{ .Values.app_name }}
