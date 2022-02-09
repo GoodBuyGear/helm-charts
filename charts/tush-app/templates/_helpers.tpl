@@ -39,12 +39,7 @@ helm.sh/chart: {{ include "tush-app.chart" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-{{/*
-Error: label validation error: missing key "app.kubernetes.io/managed-by
-Fix: https://stackoverflow.com/questions/62964532/helm-not-creating-the-resources
-*/}}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/managed-by: "Helm"
 {{- end }}
 
 {{/*
