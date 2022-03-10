@@ -18,3 +18,6 @@ To install the <chart-name> chart:
 To uninstall the chart:
 
     helm delete my-<chart-name>
+
+Syntax check your templates
+`helm template tush-app . --values values.staging.yaml`
