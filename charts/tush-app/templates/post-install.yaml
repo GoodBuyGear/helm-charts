@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.app_name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- include "tush-app.labels" . | nindent 4 }}
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  template:
+    metadata:
+      name: "{{ .Values.app_name }}"
+      labels:
+      {{- include "tush-app.labels" . | nindent 4 }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: post-install-job
+        image: "alpine/httpie:latest"
+        command: ["http","printf '{\"state\": \"success\"}'| \
+                  http  \
+                  --follow \
+                  --timeout 3600 \
+                  POST 'https://api.github.com/repos/GoodBuyGear/webapp/deployments/{{  .Values.DEPLOYMENT_ID }}/statuses' \
+                  Authorization:'Basic {{ .Values.GITHUB_TOKEN }}' \
+                  Content-Type:'application/json'"]
+
