@@ -22,6 +22,9 @@ spec:
       restartPolicy: Never
       containers:
       - name: {{ .Values.app_name }}-post-install-job
-        image: 788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/httpie
-        command: ["http","https://api.github.com/repos/GoodBuyGear/webapp/deployments/{{ .Values.DEPLOYMENT_ID }}/statuses Authorization:'Basic {{ .Values.GITHUB_TOKEN }}' state=success --follow --debug --verify=no --json"]
-
+        image: alpine/curl
+        command:
+        - /bin/sh
+        args:
+        - -c
+        - 'curl -X POST -H "Authorization: Basic {{ .Values.GITHUB_TOKEN }}" -H "Content-Type: application/json" https://api.github.com/repos/GoodBuyGear/webapp/deployments/{{ .Values.DEPLOYMENT_ID }}/statuses -d "{\"state\":\"success\"}"'
