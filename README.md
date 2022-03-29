@@ -19,5 +19,14 @@ To uninstall the chart:
 
     helm delete my-<chart-name>
 
+## Troubleshooting
+
 Syntax check your templates
 `helm template tush-app . --values values.staging.yaml`
+
+## Updating the chart
+
+1. Make your edits/
+2. Make sure to increment the chart version in `Chart.yaml` this will update the chart repo
+3. Merge to main and push to remote
+4. The `release` github will update the chart repo
