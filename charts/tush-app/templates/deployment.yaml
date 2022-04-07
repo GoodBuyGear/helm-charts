@@ -42,7 +42,7 @@ spec:
               secretProviderClass: "eks-cluster-secrets"
       containers:
         - name: {{ .Values.app_name }}
-          image: {{ .Values.container.image }}
+          image: {{ $image := print .Values.container.image .Values.TARGET_SHA }}{{ $image }}
           imagePullPolicy: Always
           ports:
             - containerPort: 8081

@@ -2,7 +2,7 @@ app_name: tush-app
 namespace: default
 replicas: 1
 container:
-  image: 788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/tush-app:latest
+  image: "788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/tush-app:"
 env:
   - DATADOG_PORT='8126'
   - NODE_ENV='development'
