@@ -1,0 +1,241 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gbg-data-pipeline
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app_name }}
+    spec:
+      serviceAccountName: secrets-service-account
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "eks-cluster-secrets"
+      containers:
+      - name: {{ .Values.app_name }}
+        image: {{ $image := print .Values.container.image .Values.TARGET_SHA }}{{ $image }}
+        imagePullPolicy: Always
+        env:
+          - name: DATADOG_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: DATADOG_PORT
+            value: '8126'
+          - name: BACKGROUND_WORKER
+            value: "false"
+          - name: QUEUE_WORKER
+            value: "true"
+          - name: SHOPIFY_API_VERSION
+            value: "2021-10"
+          {{- range .Values.env }}
+          - name: {{ regexSplit "=" . -1 | first }}
+            value: {{ regexSplit "=" . -1 | last }}
+          {{- end }}
+          - name: SHOPIFY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: shopify_password            
+          - name: SENTRY_DSN
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: sentry_dsn
+          - name: PRODUCTS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: products_queue_sqs_url
+          - name: USERS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: users_queue_sqs_url
+          - name: BUYERS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: buyers_queue_sqs_url
+          - name: SELLERS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: sellers_queue_sqs_url
+          - name: TRANSACTIONS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: transactions_queue_sqs_url
+          - name: PICKUPS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: pickups_queue_sqs_url
+          - name: DIRECT_COPY_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: direct_copy_queue_sqs_url
+          - name: PROXY_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: proxy_queue_sqs_url
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: aws_access_key
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: aws_secret_key
+          - name: TUSHDB_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: tushdb_url
+          - name: TUSHDB_DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: tushdb_database_name
+          - name: CLUSTER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: cluster_name
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app_name }}-background
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app_name }}-background
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app_name }}-background
+    spec:
+      serviceAccountName: secrets-service-account
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "eks-cluster-secrets"
+      containers:
+      - name: gbg-data-pipeline-background
+        image: {{ $image := print .Values.container.image .Values.TARGET_SHA }}{{ $image }}
+        imagePullPolicy: Always
+        env:
+          - name: DATADOG_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: DATADOG_PORT
+            value: '8126'
+          - name: BACKGROUND_WORKER
+            value: "true"
+          - name: BUCKET_NAME
+            value: "staging.datalake.goodbuygear.com"
+          - name: QUEUE_WORKER
+            value: "false"
+          {{- range .Values.env }}
+          - name: {{ regexSplit "=" . -1 | first }}
+            value: {{ regexSplit "=" . -1 | last }}
+          {{- end }}
+          - name: SHOPIFY_API_VERSION
+            value: "2021-10"
+          - name: SHOPIFY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: shopify_password
+          - name: SENTRY_DSN
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: sentry_dsn
+          - name: PRODUCTS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: products_queue_sqs_url
+          - name: USERS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: users_queue_sqs_url
+          - name: BUYERS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: buyers_queue_sqs_url
+          - name: SELLERS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: sellers_queue_sqs_url
+          - name: TRANSACTIONS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: transactions_queue_sqs_url
+          - name: PICKUPS_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: pickups_queue_sqs_url
+          - name: DIRECT_COPY_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: direct_copy_queue_sqs_url
+          - name: PROXY_QUEUE_SQS_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: proxy_queue_sqs_url
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: aws_access_key
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: aws_secret_key
+          - name: TUSHDB_URL
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: tushdb_url
+          - name: TUSHDB_DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: tushdb_database_name
+          - name: CLUSTER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: gbg-data-pipeline
+                key: cluster_name
+

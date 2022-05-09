@@ -1,0 +1,9 @@
+app_name: gbg-data-pipeline
+namespace: default
+replicas: 1
+container:
+  image: "788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/gbg_data_pipeline:"
+env:
+  - CLUSTER_NAME="GBG-Prod"
+  - BUCKET_NAME="datalake.goodbuygear.com"
+  - SHOPIFY_SHOP_URL="goodbuygear.com"
