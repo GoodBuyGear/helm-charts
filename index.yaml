@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  data-pipeline:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2022-05-10T20:28:09.092920216Z"
+    description: A Helm chart for Data Pipeline
+    digest: c4228b6e1b81a83d7b8827b815a0564c0a3a20b0771c0595480c3a4f6c21141c
+    name: data-pipeline
+    type: application
+    urls:
+    - https://github.com/GoodBuyGear/helm-charts/releases/download/data-pipeline-0.0.1/data-pipeline-0.0.1.tgz
+    version: 0.0.1
   tush-app:
   - apiVersion: v2
     appVersion: 1.16.0
