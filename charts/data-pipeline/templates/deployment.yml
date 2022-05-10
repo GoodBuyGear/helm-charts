@@ -46,7 +46,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: gbg-data-pipeline
-                key: shopify_password            
+                key: shopify_password
           - name: SENTRY_DSN
             valueFrom:
               secretKeyRef:
@@ -153,8 +153,6 @@ spec:
             value: '8126'
           - name: BACKGROUND_WORKER
             value: "true"
-          - name: BUCKET_NAME
-            value: "staging.datalake.goodbuygear.com"
           - name: QUEUE_WORKER
             value: "false"
           {{- range .Values.env }}
