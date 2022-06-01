@@ -1,0 +1,184 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app_name }}
+  labels:
+    app: {{ .Values.app_name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.app_name }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 4000
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 4000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app_name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app_name }}
+    spec:
+      serviceAccountName: secrets-service-account
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "eks-cluster-secrets"
+      containers:
+        - name: {{ .Values.app_name }}
+          image: 788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/inbound-processing-app:latest
+          env:
+            - name: DATADOG_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DATADOG_PORT
+              value: "8126"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: sentry_dsn
+            - name: DEAD_LETTER_QUEUE
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: dead_letter_queue
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: aws_access_key_secret
+            - name: SECRET_KEY_BASE
+              value: "Y9Yj4AqTL34D+ZJdvDGGxhzuQoDKklcl23kUw1IXGYv28SnSTRApdxqBA5IDtsx6Y9Yj4AqTL34D+ZJdvDGGxhzuQoDKklcl23kUw1IXGYv28SnSTRApdxqBA5IDtsx6"
+            - name: KAFKA_BROKERS
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: eventstream_kafka_brokers
+            - name: EVENTSTREAM_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: registry_access_key
+            - name: EVENTSTREAM_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: registry_secret_key
+            - name: EVENTSTREAM_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: kafka_scram_username
+            - name: EVENTSTREAM_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: eventstream-kafka-client-credentials
+                  key: kafka_scram_password
+            - name: KLAVIYO_PUBLIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: klaviyo_public_api_key
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: database_url
+            - name: TUSH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: tush_database_url
+            - name: SHOPIFY_URL
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: shopify_shop_url
+            - name: SHOPIFY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: shopify_password
+            - name: SHOPIFY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: shopify_api_key
+            - name: GOOGLE_CALENDAR_ID
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: google_calendar_id
+            - name: GOOGLE_API_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: google_api_client_id
+            - name: GOOGLE_API_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: google_api_client_secret
+            - name: GOOGLE_API_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: google_api_refresh_token
+            - name: TEXT_MAGIC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: text_magic_username
+            - name: TEXT_MAGIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: text_magic_key
+            - name: WORKWAVE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: workwave_api_key
+            - name: BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: bucket_name
+            - name: BUCKET_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: bucket_host
+            - name: ZAPIER_SERVICE_CREATE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: zapier_service_create_url
+            {{- range .Values.env }}
+            - name: {{ regexSplit "=" . -1 | first }}
+              value: {{ regexSplit "=" . -1 | last }}
+            {{- end }}
