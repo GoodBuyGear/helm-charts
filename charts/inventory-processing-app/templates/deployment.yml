@@ -43,7 +43,7 @@ spec:
               secretProviderClass: "eks-cluster-secrets"
       containers:
         - name: {{ .Values.app_name }}
-          image: 788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/inbound-processing-app:latest
+          image: 788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/inventory-processing-app:latest
           env:
             - name: DATADOG_HOST
               valueFrom:
@@ -56,11 +56,6 @@ spec:
                 secretKeyRef:
                   name: gbg-inventory-processing-app
                   key: sentry_dsn
-            - name: DEAD_LETTER_QUEUE
-              valueFrom:
-                secretKeyRef:
-                  name: gbg-inventory-processing-app
-                  key: dead_letter_queue
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
@@ -73,47 +68,17 @@ spec:
                   key: aws_access_key_secret
             - name: SECRET_KEY_BASE
               value: "Y9Yj4AqTL34D+ZJdvDGGxhzuQoDKklcl23kUw1IXGYv28SnSTRApdxqBA5IDtsx6Y9Yj4AqTL34D+ZJdvDGGxhzuQoDKklcl23kUw1IXGYv28SnSTRApdxqBA5IDtsx6"
-            - name: KAFKA_BROKERS
-              valueFrom:
-                secretKeyRef:
-                  name: eventstream-kafka-client-credentials
-                  key: eventstream_kafka_brokers
-            - name: EVENTSTREAM_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: eventstream-kafka-client-credentials
-                  key: registry_access_key
-            - name: EVENTSTREAM_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: eventstream-kafka-client-credentials
-                  key: registry_secret_key
-            - name: EVENTSTREAM_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: eventstream-kafka-client-credentials
-                  key: kafka_scram_username
-            - name: EVENTSTREAM_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: eventstream-kafka-client-credentials
-                  key: kafka_scram_password
             - name: KLAVIYO_PUBLIC_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: gbg-inventory-processing-app
                   key: klaviyo_public_api_key
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: gbg-inventory-processing-app
-                  key: database_url
             - name: TUSH_DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: gbg-inventory-processing-app
                   key: tush_database_url
-            - name: SHOPIFY_URL
+            - name: SHOPIFY_SHOP_URL
               valueFrom:
                 secretKeyRef:
                   name: gbg-inventory-processing-app
@@ -148,6 +113,8 @@ spec:
                 secretKeyRef:
                   name: gbg-inventory-processing-app
                   key: google_api_refresh_token
+            - name: CLUSTER_NAME
+              value: "GBG-Staging"
             - name: TEXT_MAGIC_USERNAME
               valueFrom:
                 secretKeyRef:
