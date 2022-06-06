@@ -113,8 +113,6 @@ spec:
                 secretKeyRef:
                   name: gbg-inventory-processing-app
                   key: google_api_refresh_token
-            - name: CLUSTER_NAME
-              value: "GBG-Staging"
             - name: TEXT_MAGIC_USERNAME
               valueFrom:
                 secretKeyRef:
