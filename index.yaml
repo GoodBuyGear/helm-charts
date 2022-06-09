@@ -14,6 +14,16 @@ entries:
   inventory-processing-app:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2022-06-09T16:38:53.050331926Z"
+    description: A Helm chart for Inventory Processing App
+    digest: d9e9fa07ee21bebd6d58604dc86ad86c447dda5fa45f7bb0b6cd66a18a7f101b
+    name: inventory-processing-app
+    type: application
+    urls:
+    - https://github.com/GoodBuyGear/helm-charts/releases/download/inventory-processing-app-0.0.4/inventory-processing-app-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2022-06-09T16:30:53.926513281Z"
     description: A Helm chart for Inventory Processing App
     digest: a14be386cf8c1bce1b091cdaf16a27e78988f4968ab3cd378aafb328f338173f
