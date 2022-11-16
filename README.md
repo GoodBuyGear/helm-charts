@@ -10,7 +10,7 @@ Once Helm has been set up correctly, add the repo as follows:
 For exmaple:
 
   `helm repo add gbg-helm-charts https://goodbuygear.github.io/helm-charts/`
-  
+
 If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
 <alias>` to see the charts.
@@ -34,7 +34,11 @@ To uninstall the chart:
 
 ### Syntax check your templates
 
-` helm template tush-app . --values values.staging.yaml  --set DD_API_KEY=****  --set SENTRY_KEY=***** --set DEPLOYMENT_ID=**** --set GITHUB_TOKEN=**** --set TARGET_SHA=***`
+`helm template tush-app . --values values.staging.yaml  --set DD_API_KEY=****  --set SENTRY_KEY=***** --set DEPLOYMENT_ID=**** --set GITHUB_TOKEN=**** --set TARGET_SHA=***`
+
+`kubectl config use-context GBG-Staging`
+
+`helm template inventory-processing-app . --values values.staging.yaml  --set TARGET_SHA=0c4252b17e594f7cb2f5204085f75d130621840b`
 
 ### Run update from local
 ```bash

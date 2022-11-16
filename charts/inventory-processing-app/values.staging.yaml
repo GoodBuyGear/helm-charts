@@ -2,6 +2,6 @@ app_name: gbg-inventory-processing-app
 namespace: default
 replicas: 1
 container:
-  image: "788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/inventory-processing-app"
+  image: "788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/inventory-processing-app:"
 env:
   - CLUSTER_NAME="GBG-Staging"

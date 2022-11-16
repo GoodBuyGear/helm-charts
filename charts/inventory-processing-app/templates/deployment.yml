@@ -26,7 +26,7 @@ spec:
               secretProviderClass: "eks-cluster-secrets"
       containers:
         - name: {{ .Values.app_name }}
-          image: 788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/inventory-processing-app:latest
+          image: {{ $image := print .Values.container.image .Values.TARGET_SHA }}{{ $image }}
           env:
             - name: DATADOG_HOST
               valueFrom:
