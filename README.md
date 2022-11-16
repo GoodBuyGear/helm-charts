@@ -25,7 +25,7 @@ To uninstall the chart:
 
 ## Updating the chart
 
-1. Make your edits/
+1. Make your edits
 2. Make sure to increment the chart version in `Chart.yaml` this will update the chart repo
 3. Merge to main and push to remote
 4. The `release` github will update the chart repo
