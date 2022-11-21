@@ -23,6 +23,28 @@ To uninstall the chart:
 
     helm delete my-<chart-name>
 
+## Creating a new chart
+**From the base repo directory.**
+
+1. create an empty Helm chart
+
+    `helm create charts/<chart-name>`
+
+2. delete the following support files in the `templates` directory:
+
+* `hpa.yaml`
+* `ingress.yaml`
+* `NOTES.txt`
+* `service.yaml`
+* `serviceaccount.yaml`
+* `charts/*`
+
+3. overwrite the default deployment yaml with the one from the app
+
+    `cp <app_dir>/deployment.yml charts/<chart-name>/templates/deployment.yaml`
+
+4. template-ize the deployment file. Use the values.*.yaml files to avoid repetition.
+
 ## Updating the chart
 
 1. Make your edits
