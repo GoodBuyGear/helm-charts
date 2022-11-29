@@ -1,37 +1,17 @@
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: gbg-bluebook-project
-  labels:
-    app: gbg-bluebook-project
-spec:
-  type: ClusterIP
-  selector:
-    app: gbg-bluebook-project
-  ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 4000
-    - name: https
-      protocol: TCP
-      port: 443
-      targetPort: 4000
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gbg-bluebook-project
+  name: {{ .Values.app_name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gbg-bluebook-project
+      app: {{ .Values.app_name }}
   template:
     metadata:
       labels:
-        app: gbg-bluebook-project
+        app: {{ .Values.app_name }}
     spec:
       serviceAccountName: secrets-service-account
       volumes:
@@ -42,8 +22,8 @@ spec:
             volumeAttributes:
               secretProviderClass: "eks-cluster-secrets"
       containers: 
-        - name: gbg-bluebook-project
-          image: 788737964674.dkr.ecr.us-west-2.amazonaws.com/gbg/bluebook:latest
+        - name: {{ .Values.app_name }}
+          image: {{ $image := print .Values.container.image .Values.TARGET_SHA }}{{ $image }}
           env:
             - name: DATADOG_HOST
               valueFrom:
@@ -59,13 +39,16 @@ spec:
                   name: gbg-bluebook-project
                   key: secret_key_base
             - name: SHOPIFY_SHOP_URL
-              value: "good-buy-gear.myshopify.com"
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: shopify_shop_url
             - name: SHOPIFY_API_VERSION
               value: "2021-10"
             - name: SHOPIFY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gbg-data-pipeline
+                  name: gbg-bluebook-project
                   key: shopify_password
             - name: STOREFRONT_DATABASE
               value: "ebdb"

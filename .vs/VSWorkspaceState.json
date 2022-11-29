@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\charts",
+    "\\charts\\bluebook-app",
+    "\\charts\\bluebook-app\\templates",
+    "\\charts\\data-pipeline",
+    "\\charts\\data-pipeline\\templates",
+    "\\charts\\inventory-processing-app",
+    "\\charts\\inventory-processing-app\\templates",
+    "\\charts\\tush-app",
+    "\\charts\\tush-app\\templates"
+  ],
+  "PreviewInSolutionExplorer": false
+}
