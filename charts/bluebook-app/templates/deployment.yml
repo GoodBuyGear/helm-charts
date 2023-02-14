@@ -108,5 +108,5 @@ spec:
             - name: TUSH_DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: gbg-bluebook-project
+                  name: gbg-inventory-processing-app
                   key: tush_database_url  
