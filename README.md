@@ -60,7 +60,7 @@ To uninstall the chart:
 
 `kubectl config use-context GBG-Staging`
 
-`helm template inventory-processing-app . --values values.staging.yaml  --set TARGET_SHA=0c4252b17e594f7cb2f5204085f75d130621840b`
+`helm template inventory-processing-app . --values values.staging.yml  --set TARGET_SHA=0c4252b17e594f7cb2f5204085f75d130621840b`
 
 ### Run update from local
 ```bash

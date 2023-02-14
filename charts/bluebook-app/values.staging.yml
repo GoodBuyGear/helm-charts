@@ -1,4 +1,4 @@
-app_name: gbg-bluebook-project
+app_name: bluebook-app
 namespace: default
 replicas: 1
 container:
