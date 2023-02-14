@@ -1,0 +1,112 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app_name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+  {{- include "bluebook-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app_name }}
+    spec:
+      serviceAccountName: secrets-service-account
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "eks-cluster-secrets"
+      containers: 
+        - name: {{ .Values.app_name }}
+          image: {{ $image := print .Values.container.image .Values.TARGET_SHA }}{{ $image }}
+          env:
+            - name: DATADOG_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DATADOG_PORT
+              value: "8126"
+            - name: SENTRY_DSN
+              value: "https://5c4ca848e83341848782db58c7906a2b@o936489.ingest.sentry.io/6661069"
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: secret_key_base
+            - name: SHOPIFY_SHOP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: shopify_shop_url
+            - name: SHOPIFY_API_VERSION
+              value: "2021-10"
+            - name: SHOPIFY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: shopify_password
+            - name: STOREFRONT_DATABASE
+              value: "ebdb"
+            - name: STOREFRONT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: storefront_username
+            - name: STOREFRONT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: storefront_password
+            - name: STOREFRONT_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: storefront_hostname
+            - name: OPENSEARCH_BASE_URL
+              value: "https://vpc-gbg-cluster-hgnbyibqsjlnq2ybpucmhgklyq.us-west-2.es.amazonaws.com"
+            - name: OPENSEARCH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: opensearch_username
+            - name: OPENSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: opensearch_password
+            - name: CLUSTER_NAME
+              value: "GBG-STAGING"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: aws_access_key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: aws_secret_key
+            - name: QUEUE_STORE_FRONT_SQS_WORKER
+              value: "https://sqs.us-west-2.amazonaws.com/073773133343/gbg-staging-bluebook"
+            - name: STOREFRONT_BASE_URL
+              value: "https://shopifyapp-dev.goodbuygear.com"
+            - name: BACKGROUND_WORKER
+              value: "false"
+            - name: SHOPIFY_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-bluebook-project
+                  key: shopify_password   
+            - name: TUSH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: gbg-inventory-processing-app
+                  key: tush_database_url  

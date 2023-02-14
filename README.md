@@ -23,6 +23,28 @@ To uninstall the chart:
 
     helm delete my-<chart-name>
 
+## Creating a new chart
+**From the base repo directory.**
+
+1. create an empty Helm chart
+
+    `helm create charts/<chart-name>`
+
+2. delete the following support files in the `templates` directory:
+
+* `hpa.yaml`
+* `ingress.yaml`
+* `NOTES.txt`
+* `service.yaml`
+* `serviceaccount.yaml`
+* `charts/*`
+
+3. overwrite the default deployment yaml with the one from the app
+
+    `cp <app_dir>/deployment.yml charts/<chart-name>/templates/deployment.yaml`
+
+4. template-ize the deployment file. Use the values.*.yaml files to avoid repetition.
+
 ## Updating the chart
 
 1. Make your edits
@@ -38,7 +60,7 @@ To uninstall the chart:
 
 `kubectl config use-context GBG-Staging`
 
-`helm template inventory-processing-app . --values values.staging.yaml  --set TARGET_SHA=0c4252b17e594f7cb2f5204085f75d130621840b`
+`helm template inventory-processing-app . --values values.staging.yml  --set TARGET_SHA=0c4252b17e594f7cb2f5204085f75d130621840b`
 
 ### Run update from local
 ```bash
