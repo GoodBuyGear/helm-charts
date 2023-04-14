@@ -50,7 +50,7 @@ spec:
             - name: DD_AGENT_HOST
               valueFrom:
                 fieldRef:
-                  fieldPath: status.hostIPx
+                  fieldPath: status.hostIP
             - name: SENTRY_KEY
               value: {{ .Values.SENTRY_KEY }}
             - name: DD_API_KEY
@@ -58,7 +58,7 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               value: {{ .Values.AWS_ACCESS_KEY_ID }}
             - name: AWS_DEPLOY_KEY
-              value: {{ .Values.AWS_ACCESS_KEY_ID }}
+              value: {{ .Values.AWS_DEPLOY_KEY }}
             {{- range .Values.env }}
             - name: {{ regexSplit "=" . -1 | first }}
               value: {{ regexSplit "=" . -1 | last }}
