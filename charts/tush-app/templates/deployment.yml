@@ -57,8 +57,14 @@ spec:
               value: {{ .Values.DD_API_KEY }}
             - name: AWS_ACCESS_KEY_ID
               value: {{ .Values.AWS_ACCESS_KEY_ID }}
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.AWS_DEFAULT_REGION }}
             - name: AWS_DEPLOY_KEY
               value: {{ .Values.AWS_DEPLOY_KEY }}
+            - name: AWS_DEPLOY_SECRET
+              value: {{ .Values.AWS_DEPLOY_SECRET }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.AWS_SECRET_ACCESS_KEY }}
             {{- range .Values.env }}
             - name: {{ regexSplit "=" . -1 | first }}
               value: {{ regexSplit "=" . -1 | last }}
