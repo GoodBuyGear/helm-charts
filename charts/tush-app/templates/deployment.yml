@@ -46,6 +46,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
+          command: ["sleep", "infinity"]
           env:
             - name: DD_AGENT_HOST
               valueFrom:
