@@ -53,21 +53,21 @@ spec:
                   fieldPath: status.hostIP
             - name: SENTRY_KEY
               valueFrom:
-                secretKeyRef:
-                  name: tush-app-env-vars
-                  key: tush_sentry_key
+              secretKeyRef:
+                name: tush-app-env-vars
+                key: tush_sentry_key
             - name: DD_API_KEY
-                secretKeyRef:
-                  name: tush-app-env-vars
-                  key: datadog_api_key
+              secretKeyRef:
+                name: tush-app-env-vars
+                key: datadog_api_key
             - name: AWS_ACCESS_KEY_ID
-                secretKeyRef:
-                  name: tush-app-env-vars
-                  key: tush_aws_access_key
+              secretKeyRef:
+                name: tush-app-env-vars
+                key: tush_aws_access_key
             - name: AWS_SECRET_ACCESS_KEY
-                secretKeyRef:
-                  name: tush-app-env-vars
-                  key: tush_aws_secret_key
+              secretKeyRef:
+                name: tush-app-env-vars
+                key: tush_aws_secret_key
             {{- range .Values.env }}
             - name: {{ regexSplit "=" . -1 | first }}
               value: {{ regexSplit "=" . -1 | last }}
